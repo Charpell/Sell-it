@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Animated, Image } from "react-native";
 
 import BackImage from "../../../assets/images/loginPanel.jpg";
+import LoginForm from './loginForm';
 
 class LoginPanel extends Component {
   state = {
@@ -56,7 +57,9 @@ class LoginPanel extends Component {
             })
           }}
         >
-          <Text>Form</Text>
+          <LoginForm 
+            platform={this.props.platform}
+          />
         </Animated.View>
       </View>
     );
