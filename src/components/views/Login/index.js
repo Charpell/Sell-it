@@ -1,67 +1,121 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ScrollView,
+  ActivityIndicator
+} from "react-native";
 
-import { getOrientation, setOrientationListener, removeOrientationListener, getPlatform } from '../../utils/misc';
+import {
+  getOrientation,
+  setOrientationListener,
+  removeOrientationListener,
+  getPlatform,
+  getTokens,
+  setTokens
+} from "../../utils/misc";
 
-import LoadTabs from '../Tabs';
-import Logo from './logo';
-import LoginPanel from './loginPanel';
+import LoadTabs from "../Tabs";
+import Logo from "./logo";
+import LoginPanel from "./loginPanel";
+
+import { connect } from 'react-redux';
+import { autoSignIn } from '../../Store/actions/user_actions';
+import { bindActionCreators } from 'redux';
 
 class Login extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
+      loading: true,
       platform: getPlatform(),
       orientation: getOrientation(500),
       logoAnimation: false
-    }
+    };
 
-    setOrientationListener(this.changeOrientation)
+    setOrientationListener(this.changeOrientation);
   }
 
   changeOrientation = () => {
     this.setState({
       orientation: getOrientation(500)
-    })
-  }
+    });
+  };
 
   componentWillUnmount() {
-    removeOrientationListener()
+    removeOrientationListener();
   }
 
   showLogin = () => {
     this.setState({
       logoAnimation: true
-    })
+    });
+  };
+
+  componentDidMount() {
+    getTokens(value => {
+      if (value[0][1] === null) {
+        this.setState({ loading: false });
+      } else {
+        this.props.autoSignIn(value[1][1]).then(() => {
+          if (!this.props.User.userData.token) {
+            this.setState({ loading: false });
+          } else {
+            setTokens(this.props.User.userData, () => {
+              LoadTabs(true);
+            });
+          }
+        });
+      }
+    });
   }
 
-
   render() {
-    return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Logo 
-            showLogin={this.showLogin}
-            orientation={this.state.orientation}
-          />
-          <LoginPanel 
-            show={this.state.logoAnimation}
-            orientation={this.state.orientation}
-            platform={this.state.platform}
-          />
+    if (this.state.loading) {
+      return (
+        <View style={styles.loading}>
+          <ActivityIndicator />
         </View>
-      </ScrollView>
-    );
+      );
+    } else {
+      return (
+        <ScrollView>
+          <View style={styles.container}>
+            <Logo
+              showLogin={this.showLogin}
+              orientation={this.state.orientation}
+            />
+            <LoginPanel
+              show={this.state.logoAnimation}
+              orientation={this.state.orientation}
+              platform={this.state.platform}
+            />
+          </View>
+        </ScrollView>
+      );
+    }
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center'
+    backgroundColor: "#fff",
+    alignItems: "center"
   }
 });
 
-export default Login;
+function mapStateToProps(state){
+  return {
+    User: state.User
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({ autoSignIn },dispatch)
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Login)

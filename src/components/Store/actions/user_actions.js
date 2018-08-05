@@ -1,11 +1,12 @@
 import {
   REGISTER_USER,
   SIGN_USER,
+  AUTO_SIGN_IN,
 } from '../types';
 
 import axios from 'axios';
 
-import { SIGNUP, SIGNIN , FIREBASEURL} from '../../utils/keys';
+import { SIGNUP, SIGNIN , REFRESH, FIREBASEURL} from '../../utils/keys';
 
 export function signUp(data){
 
@@ -53,6 +54,30 @@ export function signIn(data){
 
     return {
         type: SIGN_USER,
+        payload: request
+    }
+
+}
+
+
+
+export const autoSignIn = (refToken) => {
+
+    const request = axios({
+        method: "POST",
+        url: REFRESH,
+        data: "grant_type=refresh_token&refresh_token=" + refToken,
+        headers:{
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    }).then(response => {
+        return response.data
+    }).catch(error =>{
+        return false
+    })
+
+    return {
+        type: AUTO_SIGN_IN,
         payload: request
     }
 
