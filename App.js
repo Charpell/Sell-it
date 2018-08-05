@@ -7,6 +7,9 @@ import Home from './src/components/views/Home';
 import AddPost from './src/components/views/Admin/AddPost';
 import SidedrawerComponenent from './src/components/views/Sidedrawer';
 import UserPosts from './src/components/views/Admin/UserPosts';
+import Article from './src/components/views/Article';
+
+
 
 const store = ConfigureStore();
 
@@ -15,6 +18,7 @@ Navigation.registerComponent("sellitApp.Home", () => Home, store, Provider);
 Navigation.registerComponent("sellitApp.AddPost", () => AddPost, store, Provider);
 Navigation.registerComponent("sellitApp.SidedrawerComponenent", () => SidedrawerComponenent, store, Provider);
 Navigation.registerComponent("sellitApp.UserPosts", () => UserPosts, store, Provider);
+Navigation.registerComponent("sellitApp.Article", () => Article, store, Provider);
 
 export default () => Navigation.startSingleScreenApp({
   screen: {
