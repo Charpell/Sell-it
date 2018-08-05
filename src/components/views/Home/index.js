@@ -14,6 +14,8 @@ import { connect } from "react-redux";
 import { getArticles } from "../../Store/actions/articles_actions";
 import { bindActionCreators } from "redux";
 
+import BlockItem from './blockitem';
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +39,15 @@ class Home extends Component {
       categorySelected: value,
       articles: []
     });
+
+    this.props.getArticles(value).then(()=>{
+      const newArticles = gridTwoColumns(this.props.Articles.list)
+
+      this.setState({
+        isLoading: false,
+        articles: newArticles
+      })
+  })
   };
 
   componentDidMount() {
@@ -49,6 +60,18 @@ class Home extends Component {
       });
     });
   }
+
+
+  showArticles = () => (
+    this.state.articles.map( (item,i ) => (
+      <BlockItem
+        key={`columnHome-${i}`}
+        item={item}
+        iteration={i}
+        goto={this.goToArticleHandler}
+      />
+    ))
+  )
 
   render() {
     return (
@@ -67,6 +90,13 @@ class Home extends Component {
             ) 
             : null
           }
+
+          <View style={styles.articleContainer}>
+              <View style={{flex:1}}>
+                {this.showArticles()}
+              </View>
+          </View>
+
         </View>
       </ScrollView>
     );
@@ -82,6 +112,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 50
   },
+  articleContainer:{
+    padding:10,
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
 });
 
 function mapStateToProps(state) {
