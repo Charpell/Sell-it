@@ -5,13 +5,15 @@ import { getOrientation, setOrientationListener, removeOrientationListener } fro
 
 import LoadTabs from '../Tabs';
 import Logo from './logo';
+import LoginPanel from './loginPanel';
 
 class Login extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      orientation: getOrientation(500)
+      orientation: getOrientation(500),
+      logoAnimation: false
     }
 
     setOrientationListener(this.changeOrientation)
@@ -27,12 +29,23 @@ class Login extends Component {
     removeOrientationListener()
   }
 
+  showLogin = () => {
+    this.setState({
+      logoAnimation: true
+    })
+  }
+
 
   render() {
     return (
       <ScrollView>
         <View style={styles.container}>
           <Logo 
+            showLogin={this.showLogin}
+            orientation={this.state.orientation}
+          />
+          <LoginPanel 
+            show={this.state.logoAnimation}
             orientation={this.state.orientation}
           />
         </View>
