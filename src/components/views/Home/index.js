@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 
-import { navigatorDrawer, navigatorDeepLink } from "../../utils/misc";
+import {
+  navigatorDrawer,
+  navigatorDeepLink,
+  gridTwoColumns
+} from "../../utils/misc";
 import HorizontalScroll from "./horizontal_scroll_icons";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { connect } from 'react-redux';
-import { getArticles } from '../../Store/actions/articles_actions';
-import { bindActionCreators } from 'redux';
 
+import { connect } from "react-redux";
+import { getArticles } from "../../Store/actions/articles_actions";
+import { bindActionCreators } from "redux";
 
 class Home extends Component {
   constructor(props) {
@@ -34,10 +39,15 @@ class Home extends Component {
     });
   };
 
-  componentDidMount(){
-    this.props.getArticles('All').then(()=>{
-      console.log('List', this.props.Articles.list)
-    })
+  componentDidMount() {
+    this.props.getArticles("All").then(() => {
+      const newArticles = gridTwoColumns(this.props.Articles.list);
+
+      this.setState({
+        isLoading: false,
+        articles: newArticles
+      });
+    });
   }
 
   render() {
@@ -49,6 +59,14 @@ class Home extends Component {
             categorySelected={this.state.categorySelected}
             updateCategoryHandler={this.updateCategoryHandler}
           />
+          {this.state.isLoading ? (
+            <View style={styles.isLoading}>
+              <Icon name="gears" size={30} color="lightgrey" />
+              <Text style={{ color: "lightgrey" }}>Loading....</Text>
+            </View>
+            ) 
+            : null
+          }
         </View>
       </ScrollView>
     );
@@ -56,18 +74,27 @@ class Home extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {}
+  container:{
+    marginTop: 5,
+  },
+  isLoading:{
+    flex:1,
+    alignItems: 'center',
+    marginTop: 50
+  },
 });
 
-
-function mapStateToProps(state){
+function mapStateToProps(state) {
   return {
     Articles: state.Articles
-  }
+  };
 }
 
-function mapDispatchToProps(dispatch){
-  return bindActionCreators({getArticles},dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ getArticles }, dispatch);
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Home);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);
