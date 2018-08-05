@@ -5,6 +5,10 @@ import Input from "../../utils/forms/input";
 import ValidationRules from '../../utils/forms/validationRules';
 import LoadTabs from '../Tabs';
 
+import { connect } from 'react-redux';
+import { signUp, signIn } from '../../Store/actions/user_actions';
+import { bindActionCreators } from 'redux';
+
 class LoginForm extends Component {
   state = {
     type:'Login',
@@ -109,7 +113,15 @@ class LoginForm extends Component {
     }
 
     if(isFormValid){
-       console.log('Data', formToSubmit)
+      if(this.state.type === "Login"){
+        this.props.signIn(formToSubmit).then(()=>{
+          console.log('User', this.props.User)
+        })
+        } else { 
+              this.props.signUp(formToSubmit).then(()=>{
+                  console.log('User', this.props.User)
+              })
+      }
 
     } else {
         this.setState({
@@ -203,4 +215,17 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LoginForm;
+
+function mapStateToProps(state){
+  return{
+      User: state.User
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({signUp,signIn},dispatch)
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(LoginForm);
+

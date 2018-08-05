@@ -20,3 +20,5 @@ android
 ios
 package-lock.json
 yarn.lock
+
+src/components/utils/keys.js
