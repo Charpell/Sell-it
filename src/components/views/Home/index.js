@@ -4,6 +4,11 @@ import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { navigatorDrawer, navigatorDeepLink } from "../../utils/misc";
 import HorizontalScroll from "./horizontal_scroll_icons";
 
+import { connect } from 'react-redux';
+import { getArticles } from '../../Store/actions/articles_actions';
+import { bindActionCreators } from 'redux';
+
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +34,12 @@ class Home extends Component {
     });
   };
 
+  componentDidMount(){
+    this.props.getArticles('All').then(()=>{
+      console.log('List', this.props.Articles.list)
+    })
+  }
+
   render() {
     return (
       <ScrollView>
@@ -48,4 +59,15 @@ const styles = StyleSheet.create({
   container: {}
 });
 
-export default Home;
+
+function mapStateToProps(state){
+  return {
+    Articles: state.Articles
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({getArticles},dispatch)
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Home);
