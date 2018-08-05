@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 
 import Input from "../../utils/forms/input";
+import ValidationRules from '../../utils/forms/validationRules';
 
 class LoginForm extends Component {
   state = {
@@ -46,6 +47,14 @@ class LoginForm extends Component {
 
     let formCopy = this.state.form;
     formCopy[name].value = value;
+
+    let rules = formCopy[name].rules
+    let valid = ValidationRules(value, rules, formCopy);
+
+    console.log('Valid', valid)
+
+    formCopy[name].valid = valid;
+
 
     this.setState({
       form: formCopy
