@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button } from "react-native";
 
 import Input from "../../utils/forms/input";
 import ValidationRules from '../../utils/forms/validationRules';
+import LoadTabs from '../Tabs';
 
 class LoginForm extends Component {
   state = {
@@ -51,8 +52,6 @@ class LoginForm extends Component {
     let rules = formCopy[name].rules
     let valid = ValidationRules(value, rules, formCopy);
 
-    console.log('Valid', valid)
-
     formCopy[name].valid = valid;
 
 
@@ -73,6 +72,14 @@ class LoginForm extends Component {
     :null
   )
 
+  formHasErrors = () => (
+    this.state.hasErrors ? 
+        <View style={styles.errorContainer}>
+            <Text style={styles.errorLabel}>Opps, check your info</Text>
+        </View>
+    :null
+  )
+
   changeFormType = () => {
     const type = this.state.type;
     this.setState({
@@ -80,6 +87,35 @@ class LoginForm extends Component {
         action: type === 'Login' ? 'Register' : 'Login',
         actionMode:  type === 'Login' ? 'Not registered, Login' : 'Not a user, Register',
     })
+  }
+
+  submitUser = () => {
+    let isFormValid = true;
+    let formToSubmit = {};
+    const formCopy = this.state.form;
+
+    for(let key in formCopy){
+        if(this.state.type === 'Login'){
+            // Login
+            if(key !== 'confirmPassword'){
+                isFormValid = isFormValid && formCopy[key].valid;
+                formToSubmit[key] = formCopy[key].value
+            }
+        } else {
+            // Register
+            isFormValid = isFormValid && formCopy[key].valid;
+            formToSubmit[key] = formCopy[key].value;
+        }
+    }
+
+    if(isFormValid){
+       console.log('Data', formToSubmit)
+
+    } else {
+        this.setState({
+            hasErrors:true
+        })
+    }
   }
 
 
@@ -104,6 +140,8 @@ class LoginForm extends Component {
         />
 
         {this.confirmPassword()}
+        {this.formHasErrors()}
+
 
         <View
           style={
@@ -115,6 +153,7 @@ class LoginForm extends Component {
           <Button
             title={this.state.action}
             color="#fd9727"
+            onPress={this.submitUser}
           />
         </View>
 
@@ -136,6 +175,7 @@ class LoginForm extends Component {
           <Button
             title="I'll do it later"
             color="lightgrey"
+            onPress={()=> LoadTabs()}
           />
         </View>
       </View>
@@ -154,6 +194,13 @@ const styles = StyleSheet.create({
   buttonStyleIos: {
       marginBottom:0
   },
+  errorContainer: {
+    marginBottom:20,
+    marginTop:10
+  },
+  errorLabel:{
+    color:'red',
+  }
 });
 
 export default LoginForm;
