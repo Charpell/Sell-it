@@ -74,10 +74,12 @@ const styles = StyleSheet.create({
   },
   sell:{
     fontSize: 40,
+    fontFamily: 'RobotoCondensed-Regular',
     color:'#555555'
   },
   it:{
     fontSize: 40,
+    fontFamily: 'RobotoCondensed-Regular',
     color:'#00ADA9'
   }
 })
