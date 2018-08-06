@@ -41,7 +41,7 @@ const LoadTabs = (allow) => {
                   }
               },
               {
-                  screen: "sellitApp.AddPost",
+                  screen: allow ? "sellitApp.AddPost" : "sellitApp.NotAllow",
                   label:"Sell it",
                   title:"Sell it",
                   icon: sources[1],

@@ -8,6 +8,7 @@ import AddPost from './src/components/views/Admin/AddPost';
 import SidedrawerComponenent from './src/components/views/Sidedrawer';
 import UserPosts from './src/components/views/Admin/UserPosts';
 import Article from './src/components/views/Article';
+import NotAllow from './src/components/views/Admin/AddPost/notallow';
 
 
 
@@ -19,6 +20,7 @@ Navigation.registerComponent("sellitApp.AddPost", () => AddPost, store, Provider
 Navigation.registerComponent("sellitApp.SidedrawerComponenent", () => SidedrawerComponenent, store, Provider);
 Navigation.registerComponent("sellitApp.UserPosts", () => UserPosts, store, Provider);
 Navigation.registerComponent("sellitApp.Article", () => Article, store, Provider);
+Navigation.registerComponent("sellitApp.NotAllow", () => NotAllow, store, Provider);
 
 export default () => Navigation.startSingleScreenApp({
   screen: {
